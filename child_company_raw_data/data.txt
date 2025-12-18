@@ -1,0 +1,1 @@
+This folder contains child_company_raw_data with full load and Incremental load folders. You need to do full load and then go to Incremental load
