@@ -124,6 +124,7 @@ databricks-fmcg-medallion-architecture-delta-lake/
 
 
 ## Gold layer Star schema ER-Diagram
+
 ```mermaid
 erDiagram
 
@@ -169,8 +170,10 @@ erDiagram
     DIM_CUSTOMERS ||--o{ FACT_ORDERS : customer_code
     DIM_PRODUCTS  ||--o{ FACT_ORDERS : product_code
     DIM_DATE      ||--o{ FACT_ORDERS : date
-    DIM_PRODUCTS  ||--o{ DIM_GROSS_PRICE : product_code
+    DIM_GROSS_PRICE  ||--o{ FACT_ORDERS : product_code
 ```
+
+
 
 ---
 ## Tech Stack
