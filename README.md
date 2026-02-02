@@ -64,7 +64,11 @@ databricks-fmcg-medallion-architecture-delta-lake/
 ## Medallion Architecture
 
 #### Bronze Layer
-- Ingests raw FMCG child company CSV data directly from `S3` / `Databricks Volumes` without any transformation
+- Ingests raw FMCG child company CSV data directly from `S3` / `Databricks Volumes` using Databricks Auto Loader `(cloudFiles)`
+- Uses Structured Streaming with checkpointing to maintain state and guarantee exactly-once processing `trigger(availableNow=True)`
+- Stores streaming metadata in `_checkpoint` directory for fault tolerance and restart safety.
+- Enables automatic schema inference and schema evolution, with schema history maintained in `_schemas` location
+- Supports seamless handling of new columns in incoming source files without breaking the pipeline
 - Preserves original schema and records for traceability
 - Data is stored as Delta tables to leverage ACID transactions, schema enforcement, and time travel
 - After successful ingestion, source files are moved to a `processed` folder to prevent duplicate data loads into the Bronze layer
@@ -187,6 +191,8 @@ Delta Lake
 Unity Catalog
 
 Medallion Architecture
+
+Auto Loader (cloudfiles) + _checkpoint + _schemas
 
 SQL
 
