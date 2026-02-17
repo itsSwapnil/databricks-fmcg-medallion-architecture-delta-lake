@@ -1,12 +1,13 @@
+---
 # databricks-fmcg-medallion-architecture-delta-lake
-End-to-end FMCG data engineering project on Databricks using Medallion Architecture and Delta Lake. Ingests CSV data from Volumes/S3, processes Bronze–Silver–Gold layers with PySpark, supports incremental loads, Delta MERGE operations, and SCD Type 2 to deliver secure, analytics-ready datasets for business reporting.
+Designed and implemented an enterprise-grade FMCG Lakehouse pipeline on Databricks using Medallion Architecture and Delta Lake. The solution integrates child and parent company datasets, supports full and incremental processing, and implements SCD Type 2 for historical accuracy.
 
 ---
 ## Problem statement
 
-Design a unified Lakehouse ETL pipeline in the FMCG domain to process historical and incremental data for a child company, align it with an existing parent company pipeline, and consolidate both into a single analytics-ready platform while ensuring data consistency and historical accuracy.
+Design a unified Lakehouse data platform in the FMCG domain to ingest and process historical and incremental data from a child company, align it with an existing parent company data model, and consolidate both into a single analytics-ready schema while ensuring data consistency, referential integrity, and full historical tracking (SCD Type 2).
 
-
+---
 ## Architecture
 ```text
 Raw CSV Data
@@ -19,6 +20,7 @@ Silver Layer (Cleaned & Conformed Data)
 Gold Layer (Business-Ready Dimensions & Facts)
 ```
 
+---
 ## Project Structure
 
 ```text
@@ -71,20 +73,20 @@ databricks-fmcg-medallion-architecture-delta-lake/
 - Supports seamless handling of new columns in incoming source files without breaking the pipeline
 - Preserves original schema and records for traceability
 - Data is stored as Delta tables to leverage ACID transactions, schema enforcement, and time travel
-- After successful ingestion, source files are moved to a `processed` folder to prevent duplicate data loads into the Bronze layer
+- Implements file-level ingestion control by moving successfully processed files from `landing` to `processed`, preventing duplicate ingestion.
 
 #### Silver Layer
-- Applies data quality rules and standardization
-- Handles missing values, null handling, deduplication, and data type normalization
-- Standardizes customer attributes and column names to align with the parent company data model
-- Produces clean, conformed dimension and fact datasets for downstream consumptions
+- Applies schema validation, null handling, and data standardization across child-company datasets.
+- Aligns child company attributes to the parent company canonical data model.
+- Implements deduplication and referential integrity checks between dimension and fact datasets.
+- Prepares conformed dimensions and validated fact datasets for dimensional modeling.
 
 #### Gold Layer
-- Generates curated, analytics-ready tables and implements a star schema–based design
+- Implements a dimensional model (Star Schema) integrating child and parent company datasets.
 - Uses Delta Lake MERGE operations with `whenMatchedUpdateAll()` and `whenNotMatchedInsertAll()`
+- Maintains referential integrity between fact and dimension tables.
 - Optimized for BI queries, reporting, and downstream analytics
 ---
-
 
 ## Setup
 
@@ -93,8 +95,8 @@ databricks-fmcg-medallion-architecture-delta-lake/
   Place below files under `setup/`
   
   - fmcg_catalog_schema.sql → to create catalog and schema for medallion architecture
-  - dim_date_table_creation.py → create date dimension table for gold layer in given data date range.
-  - schema_import.py → Bronze,silver,gold layer schema variables
+  - dim_date_table_creation.ipynb → create date dimension table for gold layer in given data date range.
+  - schema_import.ipynb → Bronze,silver,gold layer schema variables
 
 
 #### 2. Upload Raw Data
@@ -108,13 +110,13 @@ databricks-fmcg-medallion-architecture-delta-lake/
 
 #### 3. Full load:
 
-  ` 1_customers_data_processing.py → 2_products_data_processing.py → 3_pricing_data_processing.py → 1_full_load_fact.py `
+  ` 1_customers_data_processing.ipynb → 2_products_data_processing.ipynb → 3_pricing_data_processing.ipynb → 1_full_load_fact.ipynb `
   
   - Need to full load the child company historical data first till gold layer. Then Merge with Parent company by managing schema.
 
 #### 4. Incremental load:
 
-  ` 1_customers_data_processing.py → 2_products_data_processing.py → 3_pricing_data_processing.py → 2_incremental_load_fact.py `
+  ` 1_customers_data_processing.ipynb → 2_products_data_processing.ipynb → 3_pricing_data_processing.ipynb → 2_incremental_load_fact.ipynb `
   
   - After full load for daily incremental fact table data from `orders → landing` will be load andget merge with gold layer tables.
    
@@ -122,10 +124,9 @@ databricks-fmcg-medallion-architecture-delta-lake/
 	
 
 #### 5. Orchestration
-  - follow incremental load .py files flow and create workflow for daily run.
+  - follow incremental load .ipynb files flow and create workflow for daily run.
   
 ---
-
 
 ## Gold layer Star schema ER-Diagram
 
@@ -177,8 +178,6 @@ erDiagram
     DIM_GROSS_PRICE  ||--o{ FACT_ORDERS : product_code
 ```
 
-
-
 ---
 ## Tech Stack
 ```text
@@ -210,10 +209,8 @@ Orchestration
 - Ensures **idempotent ingestion** by managing landing and processed folders
 - Builds **analytics-ready Gold layer tables** optimized for BI reporting and dashboards
 - Designed with **production-grade orchestration** using Databricks Workflows
-- Scalable, modular, and easy to extend for new FMCG data sources
+- Modular and extensible design to onboard additional FMCG business units or data sources.
 ---
-
-
 
 ### Author
 
