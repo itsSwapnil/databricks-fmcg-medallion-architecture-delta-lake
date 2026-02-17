@@ -25,13 +25,13 @@ Gold Layer (Business-Ready Dimensions & Facts)
 databricks-fmcg-medallion-architecture-delta-lake/
 │
 ├── 1_fmcg_dimension_data_processing/
-│   ├── 1_customers_data_processing.py
-│   ├── 2_products_data_processing.py
-│   └── 3_pricing_data_processing.py
+│   ├── 1_customers_data_processing.ipynb
+│   ├── 2_products_data_processing.ipynb
+│   └── 3_pricing_data_processing.ipynb
 │
 ├── 2_fmcg_fact_data_processing/
-│   ├── 1_full_load_fact.py
-│   └── 2_incremental_load_fact.py
+│   ├── 1_full_load_fact.ipynb
+│   └── 2_incremental_load_fact.ipynb
 │
 ├── child_company_raw_data/
 │   ├── orders/
@@ -53,9 +53,9 @@ databricks-fmcg-medallion-architecture-delta-lake/
 │   ├── incremental_load
 │
 ├── setup/
-│   ├── dim_date_table_creation.py
+│   ├── dim_date_table_creation.ipynb
 │   ├── fmcg_catalog_schema.sql
-│   └── schema_import.py
+│   └── schema_import.ipynb
 │
 └── README.md
 ```
